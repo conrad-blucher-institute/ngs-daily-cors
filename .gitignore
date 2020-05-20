@@ -1,0 +1,7 @@
+temp
+temp/*
+.env
+log.txt
+ngs-cors-env
+.vscode
+__pycache__
