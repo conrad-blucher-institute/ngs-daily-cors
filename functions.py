@@ -7,6 +7,12 @@ from datetime import timedelta
 from dotenv import load_dotenv
 load_dotenv()
 
+# Return true if .env file exists
+def isEnvFileAvailable():
+    if os.path.exists('.env'):
+        return True
+    return False
+
 
 def getTodayDate():
     today = date.today()
@@ -23,8 +29,6 @@ def getCurrentYear():
     return datetime.datetime.now().year
 
 # Write to log file (not being used)
-
-
 def appendLog():
     currentDateTime = datetime.datetime.now()
     out = open("log.txt", "a")
@@ -32,8 +36,6 @@ def appendLog():
     out.close()
 
 # Get Array of site data from sites.txt
-
-
 def getSites():
     with open('sites.txt') as f:
         sitesArray = f.read().splitlines()
@@ -41,7 +43,6 @@ def getSites():
 
 
 # Move file to dir specified in the .env file
-
 def moveFileToStorage(site, filename):
     STORAGE_FULL_PATH = str(os.getenv("STORAGE_DESTINATION_PATH"))
     path = STORAGE_FULL_PATH + "/" + str(getCurrentYear())
@@ -59,8 +60,6 @@ def moveFileToStorage(site, filename):
 
 
 # Download today data and save to temp dir
-
-
 def getSiteTodayData(ftp, site):
     try:
         ftp.cwd(site)
