@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Return true if .env file exists
+
+
 def isEnvFileAvailable():
     if os.path.exists('.env'):
         return True
@@ -29,13 +31,30 @@ def getCurrentYear():
     return datetime.datetime.now().year
 
 # Write to log file (not being used)
-def appendLog():
-    currentDateTime = datetime.datetime.now()
-    out = open("log.txt", "a")
-    out.write("Run at " + str(currentDateTime) + "\n")
+
+
+def appendLog(msg):
+    fileNameWithPath = "./log/" + \
+        str(getCurrentYear()) + "_" + getTodayPosition() + ".txt"
+
+    if not os.path.exists(fileNameWithPath):
+        with open(fileNameWithPath, 'w'):
+            pass
+    out = open(fileNameWithPath, "a")
+    logMsg = datetime.datetime.now().strftime("%H:%M:%S.%f") + ": " + msg + "\n"
+    out.write(logMsg)
     out.close()
 
+# Append to log and print
+
+
+def logPrint(msg):
+    print(msg)
+    appendLog(msg)
+
 # Get Array of site data from sites.txt
+
+
 def getSites():
     with open('sites.txt') as f:
         sitesArray = f.read().splitlines()
@@ -54,9 +73,9 @@ def moveFileToStorage(site, filename):
     try:
         shutil.move("./temp/" + filename, path + "/" + filename)
     except:
-        print("Failed: Cannot move file " + filename + " to " + path)
+        logPrint("Failed: Cannot move file " + filename + " to " + path)
     else:
-        print("Moved file" + filename + " to " + path)
+        logPrint("Moved file " + filename + " to " + path)
 
 
 # Download today data and save to temp dir
@@ -64,8 +83,8 @@ def getSiteTodayData(ftp, site):
     try:
         ftp.cwd(site)
     except:
-        print("Failed: Remote directory " + site +
-              " does not exist or script is canceled manually.")
+        logPrint("Failed: Remote directory " + site +
+                 " does not exist or script is canceled manually.")
     else:
         targetFileExt = str(getCurrentYear())[:2] + 'd.Z'
         filename = site + getTodayPosition() + '0.' + targetFileExt
@@ -73,14 +92,14 @@ def getSiteTodayData(ftp, site):
             ftp.retrbinary("RETR " + filename,
                            open("temp/" + filename, "wb").write)
         except:
-            print("Failed: Cannot download file from site " + site +
-                  ". File may not exist or has a different name.")
+            logPrint("Failed: Cannot download file from site " + site +
+                     ". File may not exist or has a different name.")
             # go back one dir in ftp
             ftp.cwd('../')
         else:
             # go back one dir in ftp
             ftp.cwd('../')
-            print("Downloaded: " + filename +
-                  " | Site " + site + " | Path: " + ftp.pwd())
+            logPrint("Downloaded: " + filename +
+                     " | Site " + site + " | Path: " + ftp.pwd())
             moveFileToStorage(site, filename)
             # Move data to storage
