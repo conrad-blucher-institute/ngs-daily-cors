@@ -15,6 +15,8 @@ def isEnvFileAvailable():
         return True
     return False
 
+# Return formatted string
+
 
 def getTodayDate():
     today = date.today()
@@ -25,6 +27,8 @@ def getTodayDate():
 # convert to string and padding 3
 def getTodayPosition():
     return str(((date.today() - date(getCurrentYear(), 1, 1)).days)).zfill(3)
+
+# return an int
 
 
 def getCurrentYear():
@@ -61,13 +65,10 @@ def getSites():
     return sitesArray
 
 
-# Move file to dir specified in the .env file
+# DEPRECATED: Move file to dir specified in the .env file
 def moveFileToStorage(site, filename):
     STORAGE_FULL_PATH = str(os.getenv("STORAGE_DESTINATION_PATH"))
-    path = STORAGE_FULL_PATH + "/" + str(getCurrentYear())
-    if not os.path.exists(path):
-        os.makedirs(path)
-    path += "/" + site
+    path = STORAGE_FULL_PATH + "/" + str(getCurrentYear()) + "/" + site
     if not os.path.exists(path):
         os.makedirs(path)
     try:
@@ -80,6 +81,10 @@ def moveFileToStorage(site, filename):
 
 # Download today data and save to temp dir
 def getSiteTodayData(ftp, site):
+    STORAGE_FULL_PATH = str(
+        os.getenv("STORAGE_DESTINATION_PATH")) + "/" + str(getCurrentYear()) + "/" + site
+    if not os.path.exists(STORAGE_FULL_PATH):
+        os.makedirs(STORAGE_FULL_PATH)
     try:
         ftp.cwd(site)
     except:
@@ -90,7 +95,7 @@ def getSiteTodayData(ftp, site):
         filename = site + getTodayPosition() + '0.' + targetFileExt
         try:
             ftp.retrbinary("RETR " + filename,
-                           open("temp/" + filename, "wb").write)
+                           open(STORAGE_FULL_PATH + "/" + filename, "wb").write)
         except:
             logPrint("Failed: Cannot download file from site " + site +
                      ". File may not exist or has a different name.")
@@ -101,5 +106,5 @@ def getSiteTodayData(ftp, site):
             ftp.cwd('../')
             logPrint("Downloaded: " + filename +
                      " | Site " + site + " | Path: " + ftp.pwd())
-            moveFileToStorage(site, filename)
-            # Move data to storage
+            # File is now downloaded straight to the storage so no need to move it
+            # moveFileToStorage(site, filename)
