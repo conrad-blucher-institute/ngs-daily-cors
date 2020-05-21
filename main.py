@@ -3,8 +3,12 @@ from ftplib import FTP
 from functions import *
 import datetime
 
-STORAGE_PATH = os.getenv("STORAGE_PATH")
+if isEnvFileAvailable() == False:
+    print("Cannot find .env file. Please create .env file based on .env.dist")
+    print("Exiting script.....")
+    exit()
 
+STORAGE_PATH = os.getenv("STORAGE_PATH")
 # login to ftp server and navigate to the CORS directory of curren day and and year
 # eg. ftp://www.ngs.noaa.gov/cors/rinex/2020/001/ (001 mean first day of 2020)
 # "ftp://www.ngs.noaa.gov/cors/rinex/2020/001/1lsu/1lsu0010.20d.Z",

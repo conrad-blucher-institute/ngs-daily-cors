@@ -3,7 +3,7 @@ This should be run as cron job on a VM
 
 ### SETUP
 
-- `pip3 install -r requirements.txt`
+- `pip3 install -r requirements.txt` or `pip install -r requirements.txt`
 - Create `.env` file based on `.env.dist` and change the environment variable approriately
 
 ### ADD MORE SITES
@@ -12,4 +12,4 @@ This should be run as cron job on a VM
 
 ### RUN
 
-- `python3 main.py`
+- `python3 main.py` or `python main.py`
