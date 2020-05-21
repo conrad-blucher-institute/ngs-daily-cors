@@ -3,9 +3,15 @@ from ftplib import FTP
 from functions import *
 import datetime
 
+# create dirs
+if not os.path.exists('temp'):
+    os.makedirs('temp')
+if not os.path.exists('log'):
+    os.makedirs('log')
+
 if isEnvFileAvailable() == False:
-    print("Cannot find .env file. Please create .env file based on .env.dist")
-    print("Exiting script.....")
+    logPrint("Cannot find .env file. Please create .env file based on .env.dist")
+    logPrint("Exiting script.....")
     exit()
 
 STORAGE_PATH = os.getenv("STORAGE_PATH")
@@ -15,8 +21,8 @@ STORAGE_PATH = os.getenv("STORAGE_PATH")
 # cors/rinex/2020/001/1lsu/1lsu0010.20d.Z
 
 start = datetime.datetime.now()
-print("Getting CORS data from NOAA...")
-print("Start Time: " + start.strftime("%Y-%m-%d %H:%M:%S"))
+logPrint("Getting CORS data from NOAA...")
+logPrint("Start Time: " + start.strftime("%Y-%m-%d %H:%M:%S"))
 
 ftp = FTP("www.ngs.noaa.gov")
 ftp.login()
@@ -27,10 +33,6 @@ ftp.cwd(getTodayPosition())
 
 # List all files/dirs in ftp
 # files = ftp.nlst()
-
-# create dirs
-if not os.path.exists('temp'):
-    os.makedirs('temp')
 
 # get sites from sites.txt
 sites = getSites()
@@ -43,5 +45,5 @@ for site in sites:
 ftp.close()
 end = datetime.datetime.now()
 diff = end - start
-print("Done.... End time: " + end.strftime("%Y-%m-%d %H:%M:%S"))
-print("All files downloaded for " + str(diff.seconds) + "s")
+logPrint("Done.... End time: " + end.strftime("%Y-%m-%d %H:%M:%S"))
+logPrint("All files downloaded for " + str(diff.seconds) + "s")
